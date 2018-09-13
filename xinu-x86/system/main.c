@@ -21,18 +21,24 @@ extern void print_report(void);
 
 int main(int argc, char **argv)
 {
+
+	//kprintf("HERE1\n");
 	/* Start the producer/consumer simulation */
 	start_prod_con();
 
+	//kprintf("HERE2\n");
 	/* Sleep for 30 seconds to let the simulation run */
-	sleep(30);
+	//sleep(15);
 	
 	/* Stop the producer/consumer simulation */
 	stop_prod_con();
 
+	//kprintf("HERE3\n");
+
 	/* Print the report */
 	print_report();
 	
+	//kprintf("HERE4\n");
 	return OK;
 } /* main */
 
