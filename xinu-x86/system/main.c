@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 
 	//kprintf("HERE2\n");
 	/* Sleep for 30 seconds to let the simulation run */
-	//sleep(15);
+	sleep(10);
 	
 	/* Stop the producer/consumer simulation */
 	stop_prod_con();

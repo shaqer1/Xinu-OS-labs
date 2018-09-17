@@ -42,7 +42,7 @@ uint8 producer_tags[NPRODUCERS] = { 'A', 'B', 'C', 'D', 'E' };
  * producer is producer_sleep_times[1], etc. The array will contain 
  * exactly NPRODUCERS locations.
  */
-int32 producer_sleep_times[NPRODUCERS] = { 10, 1000, 10, 1000, 1000 };
+int32 producer_sleep_times[NPRODUCERS] = { 1000, 1000, 1000, 1000, 1000 };
 
 /* producer_counts: an array of values representing the number
  * of items each producer produces each time interval. 
@@ -50,7 +50,7 @@ int32 producer_sleep_times[NPRODUCERS] = { 10, 1000, 10, 1000, 1000 };
  * The number for the second producer is producer_counts[1], etc. 
  * The array will contain exactly NPRODUCERS locations.
  */
-int32 producer_counts[NPRODUCERS] = { 1, 40, 35, 1, 3 };
+int32 producer_counts[NPRODUCERS] = { 160000, 160000, 160000, 160000, 160000 };
 
 
 /* consumer_tags: An array of tags (identifiers) for the consumer processes. 
@@ -67,7 +67,7 @@ uint8 consumer_tags[NCONSUMERS] = { 'a', 'b', 'c', 'd' };
  * for the second consumer is consumer_sleep_times[1], etc. The array
  * will contain exactly NCONSUMERS locations.
  */
-int32 consumer_sleep_times[NCONSUMERS] = { 1000, 0, 1000, 0 };
+int32 consumer_sleep_times[NCONSUMERS] = { 1000, 1000, 1000, 1000 };
 
 /* consumer_counts: an array of values representing the number 
  * of items each consumer consumes before returning to sleep. 
@@ -75,7 +75,7 @@ int32 consumer_sleep_times[NCONSUMERS] = { 1000, 0, 1000, 0 };
  * for the second consumer is consumer_counts[1], etc. The array 
  * will contain exactly NCONSUMERS locations.
  */
-int32 consumer_counts[NCONSUMERS] = { 55, 5, 2, 1 };
+int32 consumer_counts[NCONSUMERS] = { 200000, 200000, 200000, 200000 };
 
 /* Declarations for functions used by producer/consumer simulation	
  * in prod_cons.c

@@ -18,7 +18,7 @@ int32 cons_item_count[NCONSUMERS][NPRODUCERS]={{0}};
 
 /* insert other global variables here */
 
-sid32 mutex, slot, empty_buff, done;
+sid32 mutex, slot, empty_buff, done, insertMutexCons, insertMutexProds;
 
 int32 productionCount, consumptionCount;
 
@@ -27,30 +27,38 @@ int tail;
 pid32 pIDs[NCONSUMERS+NPRODUCERS];
 
 void updateProdCounts(uint8 item){
+    //kprintf("adding count to prods\n");
     for(int i =0; i< NPRODUCERS; i++){
         if(producer_tags[i]==item){
+            wait(insertMutexProds);
             prod_item_count[i]++;
+            signal(insertMutexProds);
             return;
         }
     }
+    //kprintf("added count to prods\n");
 }
 
 void updateConsCount(uint8 consumer_tag, uint8 val){
+    //kprintf("adding count to cons\n");
     for(int j = 0; j < NCONSUMERS; j++){
         if(consumer_tags[j] == consumer_tag){
             for(int i =0; i< NPRODUCERS; i++){
                 if(producer_tags[i]==val){
+                    wait(insertMutexCons);
                     cons_item_count[j][i]++;
+                    signal(insertMutexCons);
                     return;
                 }
             }
         }
     }
+    //kprintf("added count to cons\n");
 }
 
-int32 sumArr(int32  arr []){
+int32 sumArr(int32  arr [], int size){
     int32 sum =0;
-    for (int i =0; i < NPRODUCERS; i++){
+    for (int i =0; i < size; i++){
         sum+= arr[i];
     }
     return sum;
@@ -64,21 +72,15 @@ void insert_buffer(uint8 item)
 {
     //kprintf("IN INSERT\n");
     wait(slot);
-    //kprintf("WAIT SLOT DONE\n");
 
     wait(mutex);
-    //kprintf("WAIT MUTEX DONE\n");
 
     buffer[tail] = item;
     tail = (tail+1)% BUFFERSIZE;
     //kprintf("INSERTED\n");
 
     signal(mutex);
-    //kprintf("MUTEX UNLOCK\n");
-    //kprintf("sem empty_buff count in prod before signal: %d\n",semcount(empty_buff));
     signal(empty_buff);
-    //kprintf("sem empty_buff count after prod: %d\n",semcount(empty_buff));
-    //kprintf("SIGNALED empty_buff\n");
 
 } /* insert_buffer */
 
@@ -94,6 +96,7 @@ uint8 remove_buffer()
     //kprintf("WAIT empty_buff DONE\n");
     wait(mutex);
     signal(done);
+    //kprintf("sem done count post signal: %x\n",semcount(done));
     //kprintf("WAIT MUTEX DONE\n");
     uint8 val = buffer[head];
     head = (head+1)%BUFFERSIZE;
@@ -162,10 +165,16 @@ void start_prod_con(void)
     mutex = semcreate(1);
     slot = semcreate(BUFFERSIZE);
     empty_buff = semcreate(0);
-    //kprintf("%d\n", sumArr(producer_counts));
-    productionCount =sumArr(producer_counts);
-    consumptionCount = sumArr(consumer_counts);
-    done = semcreate(-1*(productionCount <= consumptionCount?productionCount:consumptionCount));
+    insertMutexCons = semcreate(1);
+    insertMutexProds = semcreate(1);
+    /* counts how many consumtions and productions there will be so it can stop 
+    accoridingly when no more changes will take place in simulation. */
+    productionCount =sumArr(producer_counts, NPRODUCERS);
+    consumptionCount = sumArr(consumer_counts, NCONSUMERS);
+    //kprintf("%x %x %x\n",productionCount, consumptionCount, (productionCount <= consumptionCount?productionCount:consumptionCount));
+    done = semcreate(0);
+    //kprintf("sem init count: %x\n",-1*(productionCount <= consumptionCount?productionCount:consumptionCount));
+    //wait(done);
     tail =0;
     head =0;
     int j = 0;
@@ -173,7 +182,7 @@ void start_prod_con(void)
         pIDs[j++] = resume(create(producer, 2000, 20, "prod",3,producer_tags[i],producer_counts[i],producer_sleep_times[i]));
     }
     for(int i =0; i< NCONSUMERS; i++){
-        pIDs[j++] = resume(create(consumer, 2000, 20, "cons",3,consumer_tags[i],consumer_counts[i],consumer_sleep_times[i]));
+        pIDs[j++] = resume(create(consumer, 2000, 1, "cons",3,consumer_tags[i],consumer_counts[i],consumer_sleep_times[i]));
     }
 } /* start_prod_con */
 
@@ -184,9 +193,14 @@ void start_prod_con(void)
  */
 void stop_prod_con(void)
 {
-    //kprintf("sem done count after simubefore wait: %d\n",semcount(done));
-    wait(done);
-    //kprintf("sem done count after simu: %d\n",semcount(done));
+    //kprintf("sem done count after simubefore wait: %x\n",semcount(done));
+    //wait(done);
+    while((productionCount <= consumptionCount?productionCount:consumptionCount) > semcount(done)){
+        /* kprintf("waiting");
+        sleep(1); */
+    }
+    /* (productionCount <= consumptionCount?productionCount:consumptionCount) */
+    //kprintf("sem done count after simu: %x\n",semcount(done));
   for(int i = 0; i< NPRODUCERS+NCONSUMERS;i++){
       kill(pIDs[i]);
   }
@@ -194,6 +208,8 @@ void stop_prod_con(void)
   semdelete(empty_buff);
   semdelete(mutex);
   semdelete(done);
+  semdelete(insertMutexCons);
+  semdelete(insertMutexProds);
 } /* stop_prod_con */
 
 /*------------------------------------------------------------------------
@@ -220,13 +236,20 @@ void print_report(void)
         kprintf("\n");
     }
 
-    kprintf("\nThe shared buffer contains:");
+    //kprintf("\nThe shared buffer contains:");
     int32 freqLeft[NPRODUCERS] = {0};
-    for(int i =head; i<tail; i++){
+    int traversalSize = head > tail?(BUFFERSIZE+tail):(tail);
+    //kprintf("%x %x %x head tail size repectively\n", head, tail, traversalSize);
+    int i =head, difference =0;
+    while( i<traversalSize){
         for(int j = 0; j< NPRODUCERS; j++){
-            if(buffer[i]==producer_tags[j]){
+            if(buffer[i-difference]==producer_tags[j]){
                 freqLeft[j]++;
             }
+        }
+        i++;
+        if(i<traversalSize && i == BUFFERSIZE){
+            difference = BUFFERSIZE;
         }
     }
 
