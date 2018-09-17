@@ -236,7 +236,7 @@ void print_report(void)
         kprintf("\n");
     }
 
-    //kprintf("\nThe shared buffer contains:");
+    kprintf("\nThe shared buffer contains:");
     int32 freqLeft[NPRODUCERS] = {0};
     int traversalSize = head > tail?(BUFFERSIZE+tail):(tail);
     //kprintf("%x %x %x head tail size repectively\n", head, tail, traversalSize);
