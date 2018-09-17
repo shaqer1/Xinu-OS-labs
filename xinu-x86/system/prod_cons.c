@@ -179,11 +179,14 @@ void start_prod_con(void)
     head =0;
     int j = 0;
     for(int i =0; i< NPRODUCERS; i++){
-        pIDs[j++] = resume(create(producer, 2000, 20, "prod",3,producer_tags[i],producer_counts[i],producer_sleep_times[i]));
+        pIDs[j++] = create(producer, 2000, 20, "prod",3,producer_tags[i],producer_counts[i],producer_sleep_times[i]);
     }
     for(int i =0; i< NCONSUMERS; i++){
-        pIDs[j++] = resume(create(consumer, 2000, 1, "cons",3,consumer_tags[i],consumer_counts[i],consumer_sleep_times[i]));
+        pIDs[j++] = create(consumer, 2000, 20, "cons",3,consumer_tags[i],consumer_counts[i],consumer_sleep_times[i]);
     }
+    for(int i = 0; i< NPRODUCERS+NCONSUMERS;i++){
+      resume(pIDs[i]);
+  }
 } /* start_prod_con */
 
 /*------------------------------------------------------------------------
