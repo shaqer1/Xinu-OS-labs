@@ -1,0 +1,114 @@
+Time 1
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 20      110     22
+SDaemon 0       0       2
+Main process    0       50      2
+Print   0       0       2
+
+
+Starting A
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+Time 2
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 20      110     22
+SDaemon 0       0       2
+Main process    0       50      2
+Print   0       0       2
+Pr A    20      110     22
+
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+Time 3
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 20      110     22
+SDaemon 0       0       2
+Main process    0       50      2
+Print   0       0       2
+Pr A    20      110     22
+
+
+Starting B
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBAAABBBAAAABBBAAABBBAAAABBBAAABBBAAAABBBAAABBBAAAABBBAAABAAAAAAAAAAABAAAAAAAAAABAAAAAAAAAAABAAAAAAAAAABAAAAAAAAAAABAAAAAAAAAABAAA
+Time 4
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 26      116     28
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    46      127     48
+Pr B    33      123     35
+
+BBBBBAAAAAAAABBBBBBAAAAAAABBBBBBAAAAAAAABBBBBAAAAAAAABBBBBBAAAAAAABBBBBAAAAAAAABBBBBBAAAAAAAABBBBBAAAAAAABBBBBBAAAAAAAABBBBBBAAAAAAAABBBBBAAAAAAABBBBBBAAAAAAAAA
+Time 5
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 28      118     30
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    54      127     56
+Pr B    45      127     47
+
+BBBBBBBAAAAAAAABBBBBBBBAAAAAAAAABBBBBBBAAAAAAAAABBBBBBBBAAAAAAAAABBBBBBBAAAAAAAAABBBBBBBBAAAAAAAAABBBBBBBAAAAAAAAABBBBBBBBAAAAAAAAABBBBBBBAAAAAAAAABBBBBBBBAAAA
+Time 6
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    55      127     57
+Pr B    50      127     52
+
+BBBBBBBBAAAAAAAAABBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBAAAAAAAAABBBBBBBBAAAAAAAAABBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAAABBBBBBBBAAAAAAAAABBBBBBBBAAAAAAAAABBBA
+Time 7
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    55      127     57
+Pr B    53      127     55
+
+BBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAA
+Time 8
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    55      127     57
+Pr B    54      127     56
+
+BBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBAAAAAA
+Time 9
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    56      127     57
+Pr B    54      127     56
+
+BBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAA
+Time 10
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    56      127     57
+Pr B    54      127     56
+
+BBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBAAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAAAAABBBBBBBBBAAAAAA
+

@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "xinu.h": "c",
-        "prod_cons.h": "c"
+        "prod_cons.h": "c",
+        "chrono": "c"
     }
 }

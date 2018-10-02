@@ -1,0 +1,114 @@
+Time 1
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 20      110     22
+SDaemon 0       0       2
+Main process    0       50      2
+Print   0       0       2
+
+
+Starting A
+
+Starting B
+
+Time 2
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 26      116     28
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    29      79      31
+Pr B    4       54      6
+
+
+Time 3
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 28      118     30
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    38      88      40
+Pr B    5       55      7
+
+
+Time 4
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    41      91      43
+Pr B    6       56      8
+
+
+Time 5
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    42      92      44
+Pr B    6       56      8
+
+
+Time 6
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    43      93      45
+Pr B    6       56      8
+
+
+Time 7
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    43      93      45
+Pr B    6       56      8
+
+
+Time 8
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    43      93      45
+Pr B    6       56      8
+
+
+Time 9
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    44      94      45
+Pr B    6       56      8
+
+
+Time 10
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    44      94      45
+Pr B    6       56      8
+
+
+

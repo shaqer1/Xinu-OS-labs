@@ -1,0 +1,124 @@
+Time 1
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 20      110     22
+SDaemon 0       0       2
+Main process    0       50      2
+Print   0       0       2
+
+
+Starting A
+ABAABAAABAABAABAABAABAAABAAAABAABAABAABAABAAABAABAABAAABAABAABAABAAABAABAABAAABAABAABAABAAABAABAAAABAABAABAABAAABAABAABAAABAABAABAABAABAAABAABAABAAABAABAABAABAA
+Time 2
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 26      116     28
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    16      66      18
+Pr B    16      66      18
+
+BBAAAAAABBBAAABBBAABBBAAABBBAAABBBAAABBBAAABBBAAABBAAABBBAAABBBAABBBAAABBBAAABBBAAABBBAAABBBAAABBAAABBBAABBBAAABBBAAABBBAAABBBAAABBBAAABBAAABBBAAABBBAABBBAAABBA
+Time 3
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 28      118     30
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    22      72      24
+Pr B    22      72      24
+
+BBBAAABBBBAAAABBBBAAAABBBBAAAAAAAABBBBAAABBBAAAAAAAABBBBAAAABBBBAAAAAAAABBBBAAABBBBAAAAAAAABBBBAAAABBBAAAAAAABBBBAAAABBBBAAAAAAAABBBBAAAABBBBAAAAAAABBBBAAAABBA
+Time 4
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    23      73      25
+Pr B    24      74      26
+
+AAAABBBBAAAABBBBBBBBAAAABBBBAAAAAAABBBBAAAABBBBBAAAABBBBAAAABBBBAAAABBBBAAAAAAAABBBBAAAABBBBAAAABBBBAAAABBBBBAAAABBBBAAAAAAAABBBBAAAABBBBAAAABBBBAAAABBBBAAAABA
+Time 5
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    24      74      26
+Pr B    24      74      26
+
+BBBBAAAAAAAABBBBAAAABBBBAAAABBBBBAAAABBBBAAAAABBBBAAAABBBBAAAABBBBAAAABBBBAAAABBBBAAAABBBBBAAAABBBBAAAAABBBBAAAABBBBAAAABBBBAAAABBBBAAAABBBBAAAABBBBBAAAABBBBAAA
+Time 6
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    24      74      26
+Pr B    24      74      26
+
+BBBBAAAAAAAABBBBAAAABBBBAAAABBBBAAAABBBBAAAABBBBBAAAABBBBAAAAABBBBAAAABBBBAAAABBBBAAAABBBBAAAABBBBAAAABBBBBAAAAABBBBAAAABBBBAAAABBBBAAAABBBBAAAABBBBAAAABBBBAA
+Time 7
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    24      74      26
+Pr B    25      75      27
+
+AAAABBBBBAAAABBBBAAAAABBBBAAAABBBBBAAAABBBBAAAABBBBAAAABBBBAAAABBBBBAAAABBBBAAAAABBBBAAAABBBBBAAAABBBBAAAABBBBAAAABBBBBAAAABBBBAAAAAAAAABBBBAAAABBBBBAAAABBBBAAB
+Time 8
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    25      75      27
+Pr B    24      74      26
+
+BBBBAAAABBBBAAAAABBBBAAAABBBBAAAABBBBAAAABBBBBBBBBAAAAABBBBAAAABBBBAAAABBBBAAAAABBBBAAAABBBBAAAABBBBBAAAAABBBBAAAABBBBAAAABBBBAAAABBBBAAAAABBBBAAAABBBBAAAABBBAA
+Time 9
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    25      75      26
+Pr B    24      74      26
+
+BBBBAAAABBBBAAAABBBBBBBBAAAABBBBAAAABBBBAAAABBBBBAAAABBBBAAAABBBBAAAAABBBBAAAABBBBAAAABBBBAAAABBBB
+process Pr B terminated, CPU time =4.010 seconds.
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+Time 10
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+Pr A    31      81      32
+
+AAAAA
+process Pr A terminated, CPU time =5.019 seconds.
+
+Time 11
+  name   prrecent   prprio    prquantum
+---------------------------------------
+prnull  0       128     2
+rdsproc 29      119     31
+SDaemon 0       0       2
+Print   0       0       2
+
+
+
