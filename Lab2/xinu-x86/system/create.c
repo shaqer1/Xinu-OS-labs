@@ -33,17 +33,31 @@ pid32	create(
 	ssize = (uint32) roundew(ssize);
 	if (((saddr = (uint32 *)getstk(ssize)) ==
 	    (uint32 *)SYSERR ) ||
-	    (pid=newpid()) == SYSERR || priority < 1 ) {
+	    (pid=newpid()) == SYSERR /* || priority < 1 */ ) {
+  		//kprintf("\n in create.c error returning %s %d\n", name, priority);
 		restore(mask);
 		return SYSERR;
 	}
 
 	prcount++;
 	prptr = &proctab[pid];
+  	//kprintf("\n in create.c %s %x\n", name, pid);
+
+	/* Lab2 */
+	prptr->prextprio = (priority < -20)?MAXEXTPRIO:
+							(priority > 20)?MINEXTPRIO:priority;
+	prptr->prbaseprio = 50;
+	prptr->prquantum = QUANTUM;
+	prptr->quota = UINT_MAX;
 
 	/* Initialize process table entry for new process */
 	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/
-	prptr->prprio = priority;
+	prptr->prprio = prptr->prbaseprio + 
+						( 2 * prptr->prextprio ) + 
+							prptr->prrecent;
+	prptr->prprio = (prptr->prprio < 0)?0:
+							(prptr->prprio > 127)?127
+								:prptr->prprio;
 	prptr->prstkbase = (char *)saddr;
 	prptr->prstklen = ssize;
 	prptr->prname[PNMLEN-1] = NULLCH;
@@ -52,6 +66,8 @@ pid32	create(
 	prptr->prsem = -1;
 	prptr->prparent = (pid32)getpid();
 	prptr->prhasmsg = FALSE;
+
+  	//kprintf("\n in create.c %x %x %s\n",priority, prptr->prprio, name);
 
 	/* Set up stdin, stdout, and stderr descriptors for the shell	*/
 	prptr->prdesc[0] = CONSOLE;
@@ -96,6 +112,7 @@ pid32	create(
 	*--saddr = 0;			/* %esi */
 	*--saddr = 0;			/* %edi */
 	*pushsp = (unsigned long) (prptr->prstkptr = (char *)saddr);
+	//kprintf("leaving create\n");
 	restore(mask);
 	return pid;
 }
@@ -114,11 +131,12 @@ local	pid32	newpid(void)
 
 	for (i = 0; i < NPROC; i++) {
 		nextpid %= NPROC;	/* Wrap around to beginning */
+		//kprintf("current pid state %x\n", proctab[nextpid].prstate);
 		if (proctab[nextpid].prstate == PR_FREE) {
 			return nextpid++;
 		} else {
 			nextpid++;
 		}
-	}
+	}	
 	return (pid32) SYSERR;
 }

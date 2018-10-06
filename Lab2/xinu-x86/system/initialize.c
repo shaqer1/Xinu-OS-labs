@@ -8,6 +8,13 @@
 extern	void	start(void);	/* Start of Xinu code			*/
 extern	void	*_end;		/* End of Xinu code			*/
 
+/* Lab2 */
+extern	void daemon(void);
+int32 loadBuffer[BUFFERSIZE];
+int32 head;
+int32 size;	
+int32 aveload;
+
 /* Function prototypes */
 
 extern	void main(void);	/* Main is the first process created	*/
@@ -25,6 +32,7 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
+pid32 DAEMON_PID;
 
 /*------------------------------------------------------------------------
  * nulluser - initialize the system and become the null process
@@ -76,17 +84,111 @@ void	nulluser()
 
 	enable();
 
-	/* Create a process to execute function main() */
+	/* Create a process to execute function daemon() */
+	head = 0, size=-1;
+	//	kprintf("start daemon\n");
+	DAEMON_PID = create((void *)daemon, INITSTK, MAXEXTPRIO,
+	 "SDaemon", 0,
+           NULL);
+	system(DAEMON_PID);
+	//	kprintf("run daemon\n");
+	resume(DAEMON_PID);
 
-	resume (
-	   create((void *)main, INITSTK, INITPRIO, "Main process", 0,
-           NULL));
+	/* Create a process to execute function main() */
+	pid32 mainpid = create((void *)main, INITSTK, 0, "Main process", 0,
+           NULL);
+	
+	resume (mainpid
+	   );
 
 	/* Become the Null process (i.e., guarantee that the CPU has	*/
 	/*  something to run when no other process is ready to execute)	*/
 
 	while (TRUE) {
 		;		/* Do nothing */
+	}
+
+}
+
+
+
+void daemon(){
+	while(1){
+		int mask = disable();
+		int32 sum =0, count =0;
+		int curr =0;
+
+		//curr = firstid(readylist);
+		//kprintf("head: %x\n", head);
+		while(curr < NPROC){
+			if(proctab[curr].prstate == PR_READY && curr != NULLPROC){
+				 //kprintf("daemon while looifp %s \n",proctab[curr].prname);
+				count++;
+			}
+			//kprintf("daemon while loop %s state %x\n",proctab[curr].prname, proctab[curr].prstate);
+			curr++;
+		}
+		//kprintf("in daemon count is %x\n", count);
+
+		for(int32 i =0; i< (size<BUFFERSIZE?size:BUFFERSIZE); i++){
+			//kprintf("loadbuffer [i] %x\n", loadBuffer[i]);
+			sum+=loadBuffer[i];
+		}
+
+		//kprintf("in daemon sum is %x\n", sum);
+
+		
+		aveload = sum/((size>0)?size:1);
+		loadBuffer[head] = count;
+		//kprintf("aveload is %x size is %x sum is %x head is %x inst load is %x \n", aveload, size, sum, head, loadBuffer[head]);
+		head = (head+1%BUFFERSIZE);
+		size = (size+1 > 60)?60:size+1;
+
+		int i=0;
+		while(i<=prcount){
+			//kprintf("in while %s \n", proctab[i].prname);
+			if(proctab[i].prstate != PR_FREE && i != currpid && i != NULLPROC){
+				//kprintf("in while's if\n");
+				//kprintf("before process %s prrecnt %x extPri %x base %x prio %x quant: %x \n", proctab[i].prname, proctab[i].prrecent,proctab[i].prextprio, proctab[i].prbaseprio, proctab[i].prprio, proctab[i].prquantum);
+				proctab[i].prrecent = (aveload * proctab[i].prrecent) / 
+								(( 2 * aveload ) + 1) + proctab[i].prextprio;
+				//kprintf("check prrecent %x \n",proctab[i].prrecent);
+				if (proctab[i].prrecent < 0){
+					proctab[i].prrecent = 0;
+					//kprintf("prrecent < 0\n");
+				}
+
+				proctab[i].prprio = proctab[i].prbaseprio + 
+								( 2 * proctab[i].prextprio ) + 
+									proctab[i].prrecent;
+
+
+				proctab[i].prprio = (proctab[i].prprio < 0)?0:
+									(proctab[i].prprio > 127)?127
+										:proctab[i].prprio;
+
+				queuetab[i].qkey = proctab[i].prprio;
+
+				proctab[i].prquantum = QUANTUM + proctab[i].prrecent;
+				//kprintf("process %s prrecnt %x prio %x quant: %x \n", proctab[i].prname, proctab[i].prrecent, proctab[i].prprio, proctab[i].prquantum);
+				insert(getitem(i), readylist, proctab[i].prprio);
+			}
+
+			i++;
+		}
+		//kprintf("out of while\n");
+
+		/* struct	procent	*prptr;	
+
+		for (int32 i = 0; i < NPROC; i++) {
+			prptr = &proctab[i];
+			if(prptr->prstate == PR_READY){
+				
+			}
+		} */
+
+		restore(mask);
+		sleep(1);
 	}
 
 }
@@ -139,7 +241,8 @@ static	void	sysinit()
 
 	prptr = &proctab[NULLPROC];
 	prptr->prstate = PR_CURR;
-	prptr->prprio = 0;
+	prptr->prprio = 128;
+	prptr->prextprio = MINEXTPRIO;
 	strncpy(prptr->prname, "prnull", 7);
 	prptr->prstkbase = getstk(NULLSTK);
 	prptr->prstklen = NULLSTK;

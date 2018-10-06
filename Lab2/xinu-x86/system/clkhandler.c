@@ -9,8 +9,21 @@
 void	clkhandler()
 {
 	static	uint32	count1000 = 1000;	/* Count to 1000 ms	*/
-
+	static uint32 count10s = 10;
 	/* Decrement the ms counter, and see if a second has passed */
+
+	if((--count10s) <= 0) {
+
+		/* 10MS second has passed, so increment 10MS count */
+
+		//kprintf("\nincrementing prrecent for %s \n",proctab[currpid].prname);
+
+		proctab[currpid].prrecent++;
+
+		/* Reset the local ms counter for the next second */
+
+		count10s = 10;
+	}
 
 	if((--count1000) <= 0) {
 
@@ -22,6 +35,8 @@ void	clkhandler()
 
 		count1000 = 1000;
 	}
+
+	proctab[currpid].time++;
 
 	/* Handle sleeping processes if any exist */
 
@@ -39,7 +54,8 @@ void	clkhandler()
 	/*   remaining time reaches zero			     */
 
 	if((--preempt) <= 0) {
-		preempt = QUANTUM;
+		preempt = proctab[currpid].prquantum/* QUANTUM */;
+		//kprintf("\nquantum reached for process %s with quantum %x\n", proctab[currpid].prname, proctab[currpid].prquantum);
 		resched();
 	}
 }

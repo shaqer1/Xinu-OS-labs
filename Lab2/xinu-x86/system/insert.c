@@ -20,7 +20,8 @@ status	insert(
 	}
 
 	curr = firstid(q);
-	while (queuetab[curr].qkey >= key) {
+	while (queuetab[curr].qkey > key) {
+		//kprintf("stuck here %s \n", proctab[curr].prname);
 		curr = queuetab[curr].qnext;
 	}
 

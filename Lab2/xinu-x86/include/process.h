@@ -1,5 +1,10 @@
 /* process.h - isbadpid */
 
+/* Lab 2 shafay Haq */
+
+#define MAXEXTPRIO -20
+#define MINEXTPRIO 20
+
 /* Maximum number of processes in the system */
 
 #ifndef NPROC
@@ -52,6 +57,13 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
+	uint32 prbaseprio; /* base prority 
+					differentiates between sys (0) and user (50) */
+	uint32 prextprio;/* external priority */
+	int32 prrecent; /* recent cpu utilization for process */
+	uint32 prquantum; /* quantum for process */
+	int32 quota;	/* Keeps track of CPU time used by process*/
+	int32 time; /* time elapsed */
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
@@ -60,3 +72,11 @@ struct procent {		/* Entry in the process table		*/
 extern	struct	procent proctab[];
 extern	int32	prcount;	/* Currently active processes		*/
 extern	pid32	currpid;	/* Currently executing process		*/
+
+extern pid32 DAEMON_PID;
+
+#define UINT_MAX -5
+
+
+
+#define BUFFERSIZE	200

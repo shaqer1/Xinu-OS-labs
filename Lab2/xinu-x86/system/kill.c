@@ -25,6 +25,12 @@ syscall	kill(
 		xdone();
 	}
 
+	int print = 0;
+
+	if(prptr->quota != UINT_MAX && prptr->time > prptr->quota){
+			print = 1;
+	}
+
 	send(prptr->prparent, pid);
 	for (i=0; i<3; i++) {
 		close(prptr->prdesc[i]);
@@ -34,6 +40,10 @@ syscall	kill(
 	switch (prptr->prstate) {
 	case PR_CURR:
 		prptr->prstate = PR_FREE;	/* Suicide */
+		if(print){
+			kprintf("\nprocess %s terminated, CPU time = %d.%d seconds\n"
+				, prptr->prname, prptr->time/1000, prptr->time%1000);
+		}
 		resched();
 
 	case PR_SLEEP:
@@ -53,6 +63,9 @@ syscall	kill(
 	default:
 		prptr->prstate = PR_FREE;
 	}
+//	kprintf("about to print %d \n", print);
+
+	
 
 	restore(mask);
 	return OK;

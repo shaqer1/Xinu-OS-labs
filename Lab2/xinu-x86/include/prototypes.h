@@ -20,7 +20,12 @@ extern	status	bufinit(void);
 
 /* in file chprio.c */
 
-extern	pri16	chprio(pid32, pri16);
+extern pri16 chprio(pid32, pri16);
+
+extern syscall system(pid32);
+
+extern syscall setquota ( pid32 , uint32 );
+
 
 /* in file clkupdate.S */
 
@@ -460,6 +465,7 @@ extern	umsg32	recvtime(int32);
 /* in file resched.c */
 extern	void	resched(void);
 extern	status	resched_cntl(int32);
+extern pid32 dequeueLast(qid16);
 
 /* in file intutils.S */
 extern	void	restore(intmask);
