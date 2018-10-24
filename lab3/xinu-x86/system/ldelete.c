@@ -9,6 +9,17 @@ syscall ldelete(
 {
 	// your implementation
 
+	intmask mask;
+	mask = disable();
+	
+	struct lockent *lockptr;
+
+	if (isbadlock(ldes) || (lockptr = &locktab[ldes])->lstate==FREE) {
+		restore(mask);
+		return SYSERR;
+	}
+	
+	lockptr->lstate = FREE;
 
 	return OK;
 }

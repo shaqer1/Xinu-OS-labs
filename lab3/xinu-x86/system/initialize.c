@@ -115,6 +115,9 @@ static	void	sysinit()
 	
 	meminit();
 
+	/* lock init */
+	linit();
+
 	/* Initialize system variables */
 
 	/* Count the Null process as the first process in the system */
