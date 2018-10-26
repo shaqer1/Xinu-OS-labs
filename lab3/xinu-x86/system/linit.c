@@ -15,6 +15,11 @@ void linit(void) {
 		lockptr = &locktab[i];
 		lockptr->lstate = FREE;
         lockptr->readcount =0;
+/*         lockptr->time = i;
+ */        lockptr->wWaitCount = 0;
+        lockptr->rWaitCount = 0;
+        lockptr->readQueue = newqueue();
+        lockptr->writeQueue = newqueue();
 	}
     restore(mask);
 }

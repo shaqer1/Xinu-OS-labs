@@ -13,7 +13,7 @@
 
 /* Lab 3 modification: Add headers and footers for the lock queues */
 
-#define NQENT	(NPROC + 4 + NSEM*2 + NLOCKS*2) 
+#define NQENT	(NPROC + 4 + NSEM*2 + NLOCKS*4) 
 #endif
 
 #define	EMPTY	(-1)		/* Null value for qnext or qprev index	*/

@@ -4,7 +4,7 @@
 
 process printProc();
 process loop(int32 think, char c);
-process sleepingloop(int32 think, char c);
+process sleepingloop(int32 sleep, int32 think, char c);
 
 int32 think = 500000;
 
@@ -22,11 +22,17 @@ process	main(void)
   kprintf("\nStarting A\n");
   prA = create(loop, INITSTK, 0, "Pr A", 2, think, 'A');
   resume(prA);
+  sleep(2);
 
-  prB = create(loop, INITSTK, 0, "Pr B", 2, think, 'B');
+  kprintf("\nStarting B\n");
+  prB = create(loop, INITSTK, 0, "Pr B", 2, think/2, 'B');
   resume(prB);
-  setquota(prA, 5000);
-  setquota(prB, 4000);
+  sleep(2);
+
+  kprintf("\nStarting C\n");
+  prC = create(loop, INITSTK, 15, "Pr C", 2, think/2, 'C');
+  resume(prC);
+  sleep(2);
 
 	return OK;
 }
@@ -41,14 +47,14 @@ process loop(int32 think, char c)
     }
 }
 
-process sleepingloop(int32 think, char c)
+process sleepingloop(int32 sleep, int32 think, char c)
 {
   int i;
   while(TRUE)
     {
       for (i = 0; i < think; i++);
       kprintf("%c", c);
-      sleepms(10);
+      sleepms(sleep);
     }
 }
 
@@ -71,7 +77,6 @@ process printProc()
       pent = proctab + i;
       if(pent->prstate != PR_FREE) kprintf("%s\t%d\t%d\t%d\n", pent->prname, pent->prrecent, pent->prprio, pent->prquantum);
     }
- 
     kprintf("\n");
     restore(mask);
     sleep(1);

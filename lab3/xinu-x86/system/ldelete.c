@@ -19,7 +19,19 @@ syscall ldelete(
 		return SYSERR;
 	}
 	
+	resched_cntl(DEFER_START);
+	while(lockptr->rWaitCount > 0){
+		ready(dequeue(lockptr->readQueue));
+	}
+	lockptr->rWaitCount = 0;
+	while(lockptr->wWaitCount > 0){
+		ready(dequeue(lockptr->writeQueue));
+	}
+	lockptr->wWaitCount =0;
+	resched_cntl(DEFER_STOP);
 	lockptr->lstate = FREE;
-
+/* 	lockptr->time+=NLOCKS;
+ */
+	restore(mask);
 	return OK;
 }

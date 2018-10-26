@@ -169,8 +169,8 @@ void reader1 ( int lck, int num, int prio )
 	a = releaseall( 1,lck );
 	if( a != OK )
 		kprintf(" Reader%d: Lock release failed %d ..\n\r", num, a ); 
-	else
-		kprintf(" Reader%d: Lock release done ..\n\r", num ); 
+	/* else
+		kprintf(" Reader%d: Lock release done ..\n\r", num );  */
 }
 
 /* Test2 - Test for basic lcreate, lock, release ( for a write lock ) 
