@@ -13,8 +13,8 @@
 struct	lockent {
 	//struct memberss
 	byte lstate;
-/* 	uint16 time;
- */	int32 readcount;
+	/* uint16 time; */
+	int32 readcount;
 	qid16 readQueue;
 	int32 rWaitCount;
 	int32 wWaitCount;

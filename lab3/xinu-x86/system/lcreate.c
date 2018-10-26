@@ -22,8 +22,8 @@ int32 lcreate() {
 		if (locktab[lock].lstate == FREE) {
       locktab[lock].lstate = USED;
 			locktab[lock].readcount = 0;
-/* 			locktab[lock].time = locktab[lock].time != i?locktab[lock].time:i;
- */			locktab[lock].rWaitCount = 0;
+			//locktab[lock].time = locktab[lock].time != i?locktab[lock].time:i;
+			locktab[lock].rWaitCount = 0;
 			locktab[lock].wWaitCount = 0;
       restore(mask);
 			return lock;

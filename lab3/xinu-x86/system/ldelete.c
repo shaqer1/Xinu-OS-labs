@@ -20,18 +20,20 @@ syscall ldelete(
 	}
 	
 	resched_cntl(DEFER_START);
+	//kprintf("deleting and readying\n");
 	while(lockptr->rWaitCount > 0){
 		ready(dequeue(lockptr->readQueue));
+		lockptr->rWaitCount--;
 	}
-	lockptr->rWaitCount = 0;
 	while(lockptr->wWaitCount > 0){
 		ready(dequeue(lockptr->writeQueue));
+		lockptr->wWaitCount--;
 	}
-	lockptr->wWaitCount =0;
-	resched_cntl(DEFER_STOP);
 	lockptr->lstate = FREE;
-/* 	lockptr->time+=NLOCKS;
- */
+	//lockptr->time+=NLOCKS;
+	//kprintf("deleted and readied\n");
+	resched_cntl(DEFER_STOP);
+
 	restore(mask);
 	return OK;
 }

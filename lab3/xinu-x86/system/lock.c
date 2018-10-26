@@ -20,7 +20,7 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 
 	lockptr = &locktab[ldes];
 
-	/* if (lockptr->lstate==FREE && lockptr->time/NLOCKS>1) {
+	/* if (lockptr->lstate==FREE && lockptr->time/NLOCKS>=1) {
 		restore(mask);
 		//kprintf("deleted lock\n");
 		return DELETED;
@@ -60,7 +60,7 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 				/* else wait till 0 */
 				insertd(currpid, lockptr->writeQueue, lpriority);
 				lockptr->wWaitCount++;
-				kprintf("in Read lock  %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
+				//kprintf("in Read lock  %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
 			
 				prptr = &proctab[currpid];
 				prptr->prstate = PR_LOCK;	/* Set state to waiting	*/
@@ -73,6 +73,7 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 				case READ :
 					insertd(currpid, lockptr->readQueue, lpriority);
 					lockptr->rWaitCount++;
+					//kprintf("in writelock stopping read on it %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
 					prptr = &proctab[currpid];
 					prptr->prstate = PR_LOCK;	/* Set state to waiting	*/
 					break;
@@ -80,7 +81,7 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 					insertd(currpid, lockptr->writeQueue, lpriority);
 					//kprintf("I had to wait:(\n");
 					lockptr->wWaitCount++;
-					kprintf("in Writelock %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
+					//kprintf("in Writelock %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
 					prptr = &proctab[currpid];
 					prptr->prstate = PR_LOCK;	/* Set state to waiting	*/
 					break;
@@ -95,5 +96,10 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 
 	resched();
 	restore(mask);
+	if(lockptr->lstate==FREE){
+		//restore(mask);
+		//kprintf("deleted lock\n");
+		return DELETED;
+	}
 	return OK;
 }
