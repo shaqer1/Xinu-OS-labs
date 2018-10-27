@@ -56,8 +56,16 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 	switch(lockptr->lstate){
 		case READ :
 			if(type == READ){
-				lockptr->lstate = READ;
-				lockptr->readcount++;
+				if(lockptr->rWaitCount > 0 && lpriority > firstkey(lockptr->writeQueue)){
+					insert(currpid, lockptr->readQueue, lpriority);
+					lockptr->rWaitCount++;
+					//kprintf("in writelock stopping read on it %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
+
+					prptr->prstate = PR_LOCK;	/* Set state to waiting	*/
+				}else{
+					lockptr->lstate = READ;
+					lockptr->readcount++;
+				}
 			}else{
 				/* else wait till 0 */
 				insert(currpid, lockptr->writeQueue, lpriority);
