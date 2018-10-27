@@ -33,7 +33,7 @@ void test6(void);
 
 int main(int argc, char** argv) {
 	kprintf("\n\nCS354 Lab3 \n\r");
-	/* kprintf("\n\nRunning test 0\n\r");
+	kprintf("\n\nRunning test 0\n\r");
 	test0();
 	kprintf("\n\nRunning test 1\n\r");
 	test1();
@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 	kprintf("\n\nRunning test 4\n\r");
 	test4();
 	kprintf("\n\nRunning test 5\n\r");
-	test5(); */
+	test5(); 
 	kprintf("\n\nRunning test 6\n\r");
 	test6();
 	return 0;
