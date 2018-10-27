@@ -19,6 +19,8 @@ struct	lockent {
 	int32 rWaitCount;
 	int32 wWaitCount;
 	qid16 writeQueue;
+	int16 maxprio;
+	bool8 idMask[NPROC];
 };
 
 

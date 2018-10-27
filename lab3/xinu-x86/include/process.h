@@ -6,6 +6,10 @@
 #define	NPROC		8
 #endif		
 
+#ifndef NLOCKS
+#define	NLOCKS		50
+#endif
+
 /* Process state constants */
 
 #define	PR_FREE		0	/* Process table entry is unused	*/
@@ -55,7 +59,9 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
-
+	uint16 prinh;
+	bool8 lockMask[NLOCKS];
+	int16 lockid; 
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
