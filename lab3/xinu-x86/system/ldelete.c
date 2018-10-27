@@ -30,6 +30,7 @@ syscall ldelete(
 		lockptr->wWaitCount--;
 	}
 	lockptr->lstate = FREE;
+	//memset(lockptr->idMask, 0, sizeof(lockptr->idMask));
 	//lockptr->time+=NLOCKS;
 	//kprintf("deleted and readied\n");
 	resched_cntl(DEFER_STOP);

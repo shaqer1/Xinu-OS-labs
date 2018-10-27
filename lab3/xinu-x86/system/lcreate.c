@@ -25,6 +25,7 @@ int32 lcreate() {
 			//locktab[lock].time = locktab[lock].time != i?locktab[lock].time:i;
 			locktab[lock].rWaitCount = 0;
 			locktab[lock].wWaitCount = 0;
+			locktab[lock].maxprio = 0;
       restore(mask);
 			return lock;
 		}

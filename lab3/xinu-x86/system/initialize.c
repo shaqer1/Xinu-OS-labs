@@ -133,6 +133,9 @@ static	void	sysinit()
 	for (i = 0; i < NPROC; i++) {
 		prptr = &proctab[i];
 		prptr->prstate = PR_FREE;
+		prptr->prinh = 0;
+		//prptr->lockMask = 0;
+		prptr->lockid = -1; 
 		prptr->prname[0] = NULLCH;
 		prptr->prstkbase = NULL;
 		prptr->prprio = 0;
