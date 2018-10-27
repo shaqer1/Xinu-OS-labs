@@ -43,10 +43,14 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 			case READ :
 				lockptr->lstate = READ;
 				lockptr->readcount++;
+				lockptr->idMask[currpid] = 1;
+				prptr->lockMask[ldes] = 1;
 				break;
 			case WRITE :
 					lockptr->lstate = WRITE;
 					lockptr->readcount = 0;
+					lockptr->idMask[currpid] = 1;
+					prptr->lockMask[ldes] = 1;
 				break;
 
 		}
@@ -58,18 +62,26 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 			if(type == READ){
 				if(lockptr->rWaitCount > 0 && lpriority > firstkey(lockptr->writeQueue)){
 					insert(currpid, lockptr->readQueue, lpriority);
+					lockptr->maxprio = proctab[currpid].prprio > lockptr->maxprio?
+						proctab[currpid].prprio:lockptr->maxprio;
 					lockptr->rWaitCount++;
+					prptr->lockid = ldes;
 					//kprintf("in writelock stopping read on it %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
 
 					prptr->prstate = PR_LOCK;	/* Set state to waiting	*/
 				}else{
 					lockptr->lstate = READ;
 					lockptr->readcount++;
+					lockptr->idMask[currpid] = 1;
+					prptr->lockMask[ldes] = 1;			
 				}
 			}else{
 				/* else wait till 0 */
 				insert(currpid, lockptr->writeQueue, lpriority);
+				lockptr->maxprio = proctab[currpid].prprio > lockptr->maxprio?
+						proctab[currpid].prprio:lockptr->maxprio;
 				lockptr->wWaitCount++;
+				prptr->lockid = ldes;
 				//kprintf("in Read lock  %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
 			
 				prptr->prstate = PR_LOCK;	/* Set state to waiting	*/
@@ -81,7 +93,10 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 			switch(type){
 				case READ :
 					insert(currpid, lockptr->readQueue, lpriority);
+					lockptr->maxprio = proctab[currpid].prprio > lockptr->maxprio?
+						proctab[currpid].prprio:lockptr->maxprio;
 					lockptr->rWaitCount++;
+					prptr->lockid = ldes;
 					//kprintf("in writelock stopping read on it %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
 
 					prptr->prstate = PR_LOCK;	/* Set state to waiting	*/
@@ -89,6 +104,9 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 				case WRITE :
 					insert(currpid, lockptr->writeQueue, lpriority);
 					//kprintf("I had to wait:(\n");
+					lockptr->maxprio = proctab[currpid].prprio > lockptr->maxprio?
+						proctab[currpid].prprio:lockptr->maxprio;
+					prptr->lockid = ldes;
 					lockptr->wWaitCount++;
 					//kprintf("in Writelock %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
 					prptr->prstate = PR_LOCK;	/* Set state to waiting	*/

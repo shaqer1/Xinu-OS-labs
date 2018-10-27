@@ -32,11 +32,18 @@ syscall releaseall (int32 numlocks, ...) {
 			lockptr->lstate = USED;
 		}
 
+		if(lockptr->readcount > 0 && lockptr->lstate == READ){
+			lockptr->readcount--;
+		}
+
 		resched_cntl(DEFER_START);
 		if(lockptr->wWaitCount == 0){
 			while(lockptr->rWaitCount > 0){
-				ready(dequeue(lockptr->readQueue));
-				//kprintf("readying all read process\n");
+				pid32 pid = dequeue(lockptr->readQueue);
+				ready(pid);				//kprintf("readying all read process\n");
+				proctab[pid].lockid = -1;
+				lockptr->idMask[pid] = 1;
+				proctab[pid].lockMask[lock] = 1;
 				lockptr->rWaitCount--;
 			}
 			lockptr->rWaitCount = 0;
@@ -45,27 +52,36 @@ syscall releaseall (int32 numlocks, ...) {
 			//kprintf("in release all %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
 			//kprintf("rWaitCount %d\n", lockptr->rWaitCount);
 		}else {
-			if(lockptr->rWaitCount == 0
+			if(lockptr->rWaitCount == 0 && lockptr->readcount == 0
 			/*  && lockptr->wWaitCount > 0 && lockptr->wWaitCount > 0 */){/* check if no readers */
-				ready(dequeue(lockptr->writeQueue));
-				//kprintf("readying a write process\n");
+				pid32 pid = dequeue(lockptr->writeQueue);
+				ready(pid);				//kprintf("readying a write process\n");
+				proctab[pid].lockid = -1;	
+				lockptr->idMask[pid] = 1;
+				proctab[pid].lockMask[lock] = 1;			//kprintf("readying a write process\n");
 				lockptr->wWaitCount--;
 				lockptr->lstate = WRITE;
 			} else {
 				int32 maxPrioW = firstkey(lockptr->writeQueue);
 				int32 maxPrioR = firstkey(lockptr->readQueue);
 				//kprintf("read max: %d, write max: %d\n", maxPrioR, maxPrioW);
-				if(maxPrioW >= maxPrioR){
-					ready(dequeue(lockptr->writeQueue));
-					//kprintf("readying writer over readx process\n");
+				if(maxPrioW >= maxPrioR && lockptr->readcount == 0){
+					pid32 pid = dequeue(lockptr->writeQueue);
+					ready(pid);					//kprintf("readying writer over readx process\n");
+					proctab[pid].lockid = -1;	
+					lockptr->idMask[pid] = 1;
+					proctab[pid].lockMask[lock] = 1;
 					lockptr->wWaitCount--;
 					lockptr->lstate = WRITE;
 				}else {
 					//kprintf("readying readers over writer process\n");
 					int32 counter = maxPrioR;
 					while(counter >= maxPrioW){
-						ready(dequeue(lockptr->readQueue));
-						
+						pid32 pid = dequeue(lockptr->readQueue);
+						ready(pid);					
+						proctab[pid].lockid = -1;	
+						lockptr->idMask[pid] = 1;
+						proctab[pid].lockMask[lock] = 1;					
 						counter =  firstkey(lockptr->readQueue);
 					}
 					lockptr->lstate = READ;
