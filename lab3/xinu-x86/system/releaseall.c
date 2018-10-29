@@ -4,6 +4,9 @@
 
 /* Lab 3: Complete this function */
 
+void recalculateMaxPrio(struct	lockent *);
+void assignPrio(pid32);
+
 syscall releaseall (int32 numlocks, ...) {
 
 	//your implementation goes here
@@ -19,14 +22,19 @@ syscall releaseall (int32 numlocks, ...) {
 	for(int32 i =0; i< numlocks; i++){
 		int32 lock = va_arg(ap, int32);
 		if (isbadlock(lock)) {
+			//kprintf("bad lock id in release all\n");
 			restore(mask);
 			return SYSERR;
 		}
 		lockptr= &locktab[lock];
 		if (lockptr->lstate == FREE) {
+			//kprintf("Free id in release all\n");
 			restore(mask);
 			return SYSERR;
 		}
+
+		proctab[currpid].lockMask[lock] = 0;
+		locktab[lock].idMask[currpid] = 0;
 
 		if(lockptr->wWaitCount == 0 && lockptr->rWaitCount ==0){
 			lockptr->lstate = USED;
@@ -41,6 +49,8 @@ syscall releaseall (int32 numlocks, ...) {
 			while(lockptr->rWaitCount > 0){
 				pid32 pid = dequeue(lockptr->readQueue);
 				ready(pid);				//kprintf("readying all read process\n");
+				if(proctab[pid].prprio == lockptr->maxprio){recalculateMaxPrio(lockptr);}
+				assignPrio(pid);
 				proctab[pid].lockid = -1;
 				lockptr->idMask[pid] = 1;
 				proctab[pid].lockMask[lock] = 1;
@@ -56,6 +66,8 @@ syscall releaseall (int32 numlocks, ...) {
 			/*  && lockptr->wWaitCount > 0 && lockptr->wWaitCount > 0 */){/* check if no readers */
 				pid32 pid = dequeue(lockptr->writeQueue);
 				ready(pid);				//kprintf("readying a write process\n");
+				if(proctab[pid].prprio == lockptr->maxprio){recalculateMaxPrio(lockptr);}
+				assignPrio(pid);
 				proctab[pid].lockid = -1;	
 				lockptr->idMask[pid] = 1;
 				proctab[pid].lockMask[lock] = 1;			//kprintf("readying a write process\n");
@@ -68,6 +80,8 @@ syscall releaseall (int32 numlocks, ...) {
 				if(maxPrioW >= maxPrioR && lockptr->readcount == 0){
 					pid32 pid = dequeue(lockptr->writeQueue);
 					ready(pid);					//kprintf("readying writer over readx process\n");
+					if(proctab[pid].prprio == lockptr->maxprio){recalculateMaxPrio(lockptr);}
+					assignPrio(pid);
 					proctab[pid].lockid = -1;	
 					lockptr->idMask[pid] = 1;
 					proctab[pid].lockMask[lock] = 1;
@@ -79,6 +93,8 @@ syscall releaseall (int32 numlocks, ...) {
 					while(counter >= maxPrioW){
 						pid32 pid = dequeue(lockptr->readQueue);
 						ready(pid);					
+						if(proctab[pid].prprio == lockptr->maxprio){recalculateMaxPrio(lockptr);}
+						assignPrio(pid);
 						proctab[pid].lockid = -1;	
 						lockptr->idMask[pid] = 1;
 						proctab[pid].lockMask[lock] = 1;					
@@ -93,4 +109,34 @@ syscall releaseall (int32 numlocks, ...) {
 	va_end(ap);
 	restore(mask);
 	return OK;
+}
+
+
+void recalculateMaxPrio(struct	lockent *lockptr){
+	qid16 i = firstid(lockptr->readQueue);
+	while(i != queuetail(lockptr->readQueue)){
+		lockptr->maxprio = proctab[i].prprio > lockptr->maxprio?
+						proctab[i].prprio:lockptr->maxprio;
+		i = queuetab[i].qnext;
+	}
+	i = firstid(lockptr->writeQueue);
+	while(i != queuetail(lockptr->writeQueue)){
+		lockptr->maxprio = proctab[i].prprio > lockptr->maxprio?
+						proctab[i].prprio:lockptr->maxprio;
+		i = queuetab[i].qnext;
+	}
+}
+
+void assignPrio(pid32 pid){
+	int32 max = -1;
+	for(int i = 0; i < NLOCKS; i++){
+		if(proctab[pid].lockMask[i] ==1 && locktab[i].maxprio > max){
+			max = locktab[proctab[pid].lockMask[i]].maxprio;
+		}
+	}
+	//kprintf("Max: %d\n", max);
+	if(max != -1){
+		proctab[pid].prprio = max;
+		proctab[pid].prinh = -1;
+	}
 }

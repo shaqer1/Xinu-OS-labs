@@ -345,11 +345,15 @@ void test5() {
   resume( create( reader1, 2000, 30, "reader", 3, lk, 3, 2 ));
   /* The 3 readers have acquired the lock */
   chprio(getpid(),60);
+  //kprintf("Main Proc: %d\n", proctab[getpid()].prprio);
   resume(mpid = create(loop,2000,40,"loop",1,10));
   kprintf("pid of medium priority process = %d\n\r",mpid);
+  //kprintf("Main Proc: %d\n", proctab[getpid()].prprio);
   resume(create(writer1,2000,50,"writer",3,lk,1,0));
   chprio(getpid(),20);
+  //kprintf("Main Proc: %d\n", proctab[getpid()].prprio);
   sleep(10);
+  //kprintf("Main Proc: %d\n", proctab[getpid()].prprio);
   if(ldelete(lk)!=OK) 
     kprintf("Test5 : Error while deleting lock\n\r");
   else

@@ -3,6 +3,8 @@
 
 /* Lab 3: Complete this function */
 
+void inherit();
+
 syscall lock(int32 ldes, int32 type, int32 lpriority) {
 
 	
@@ -66,6 +68,8 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 						proctab[currpid].prprio:lockptr->maxprio;
 					lockptr->rWaitCount++;
 					prptr->lockid = ldes;
+					inherit();
+					//kprintf("setting lock id to %d\n", prptr->lockid);
 					//kprintf("in writelock stopping read on it %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
 
 					prptr->prstate = PR_LOCK;	/* Set state to waiting	*/
@@ -82,6 +86,8 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 						proctab[currpid].prprio:lockptr->maxprio;
 				lockptr->wWaitCount++;
 				prptr->lockid = ldes;
+				inherit();
+				//kprintf("setting lock id to %d\n", prptr->lockid);
 				//kprintf("in Read lock  %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
 			
 				prptr->prstate = PR_LOCK;	/* Set state to waiting	*/
@@ -97,6 +103,8 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 						proctab[currpid].prprio:lockptr->maxprio;
 					lockptr->rWaitCount++;
 					prptr->lockid = ldes;
+					inherit();
+					//kprintf("setting lock id to %d\n", prptr->lockid);
 					//kprintf("in writelock stopping read on it %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
 
 					prptr->prstate = PR_LOCK;	/* Set state to waiting	*/
@@ -107,6 +115,8 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 					lockptr->maxprio = proctab[currpid].prprio > lockptr->maxprio?
 						proctab[currpid].prprio:lockptr->maxprio;
 					prptr->lockid = ldes;
+					inherit();
+					//kprintf("setting lock id to %d\n", prptr->lockid);
 					lockptr->wWaitCount++;
 					//kprintf("in Writelock %x %x \n", lockptr->wWaitCount, lockptr->rWaitCount);
 					prptr->prstate = PR_LOCK;	/* Set state to waiting	*/
@@ -128,4 +138,31 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 		return DELETED;
 	}
 	return OK;
+}
+
+
+void inherit(){
+	byte changed = 1;
+	struct procent *prptr;
+	while(changed != 0){
+		changed = 0;
+		for(int i =0; i <NPROC; i++){
+			prptr = &proctab[i];
+			if(prptr->lockid != -1){
+				//kprintf("\nhere %d \n", prptr->lockid);
+				struct lockent *lock = &locktab[prptr->lockid];
+
+				for(int j = 0; j < NPROC; j++){
+					if(lock->idMask[j] == 1 && proctab[i].prprio >
+							 proctab[j].prprio){
+						//kprintf("\nhere2\n");
+						proctab[j].prinh =  proctab[j].prprio;
+						proctab[j].prprio = proctab[i].prprio;
+						changed = 1;
+					}
+				}
+			}
+
+		}
+	}
 }
