@@ -6,6 +6,7 @@
  *  chprio  -  Change the scheduling priority of a process
  *------------------------------------------------------------------------
  */
+
 pri16	chprio(
 	  pid32		pid,		/* ID of process to change	*/
 	  pri16		newprio		/* New priority			*/
@@ -22,7 +23,36 @@ pri16	chprio(
 	}
 	prptr = &proctab[pid];
 	oldprio = prptr->prprio;
-	prptr->prprio = newprio;
+	byte cont = 1; 
+	for(int i = 0; cont && i < NLOCKS; i++){
+		if(prptr->lockMask[i] == 1){
+			assignPrio(pid);
+			cont = 0;
+		}
+	}
+	
+	if(cont ==0){
+		prptr->prprio = (newprio>prptr->prprio)?newprio:prptr->prprio;
+	}else{
+		prptr->prprio = newprio;
+	}
+	
+
 	restore(mask);
 	return oldprio;
 }
+
+
+/* void assignPrio(pid32 pid){
+	int32 max = -1;
+	for(int i = 0; i < NLOCKS; i++){
+		if(proctab[pid].lockMask[i] ==1 && locktab[i].maxprio > max){
+			max = locktab[proctab[pid].lockMask[i]].maxprio;
+		}
+	}
+	//kprintf("Max: %d\n", max);
+	if(max != -1){
+		proctab[pid].prprio = max;
+		proctab[pid].prinh = -1;
+	}
+} */

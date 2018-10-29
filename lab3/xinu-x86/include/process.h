@@ -62,6 +62,7 @@ struct procent {		/* Entry in the process table		*/
 	uint16 prinh;
 	bool8 lockMask[NLOCKS];
 	int16 lockid; 
+	byte deleted;
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

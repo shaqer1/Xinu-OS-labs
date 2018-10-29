@@ -22,11 +22,15 @@ syscall ldelete(
 	resched_cntl(DEFER_START);
 	//kprintf("deleting and readying\n");
 	while(lockptr->rWaitCount > 0){
-		ready(dequeue(lockptr->readQueue));
+		pid32 pid = dequeue(lockptr->readQueue);
+		ready(pid);
+		proctab[pid].deleted = 1;
 		lockptr->rWaitCount--;
 	}
 	while(lockptr->wWaitCount > 0){
-		ready(dequeue(lockptr->writeQueue));
+		pid32 pid = dequeue(lockptr->writeQueue);
+		ready(pid);
+		proctab[pid].deleted = 1;
 		lockptr->wWaitCount--;
 	}
 	lockptr->lstate = FREE;

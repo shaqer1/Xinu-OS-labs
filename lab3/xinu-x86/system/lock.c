@@ -132,8 +132,9 @@ syscall lock(int32 ldes, int32 type, int32 lpriority) {
 
 	resched();
 	restore(mask);
-	if(lockptr->lstate==FREE){
+	if(lockptr->lstate==FREE && proctab[currpid].deleted ==1){
 		//restore(mask);
+		proctab[currpid].deleted = 0;
 		//kprintf("deleted lock\n");
 		return DELETED;
 	}
