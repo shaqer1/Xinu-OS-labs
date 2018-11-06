@@ -14,12 +14,42 @@ umsg32	receive(void)
 
 	mask = disable();
 	prptr = &proctab[currpid];
-	if (prptr->prhasmsg == FALSE) {
+
+	if (prptr->prhasmsg == FALSE && prptr->rcpblkflag == FALSE) {
 		prptr->prstate = PR_RECV;
 		resched();		/* Block until message arrives	*/
 	}
+
 	msg = prptr->prmsg;		/* Retrieve message		*/
 	prptr->prhasmsg = FALSE;	/* Reset message flag		*/
+
+	if(prptr->rcpblkflag == TRUE){
+		//kprintf("recv from waiting senders\n");
+		qid16 q = prptr->sendqueue;
+		if (isbadqid(q)) {
+			return SYSERR;
+		} else if (isempty(q)) {
+			return EMPTY;
+		}
+		sendWaitcount++;
+		pid32 senderPid = dequeue(q);
+		struct procent *sendPtr = &proctab[senderPid];
+		prptr->prmsg = sendPtr->sendblkmsg;		/* Deliver message		*/
+		prptr->prhasmsg = TRUE;		/* Indicate message is waiting	*/
+		msg = prptr->prmsg;
+		//sendPtr->prstate = PR_READY;
+		sendPtr->sendblkflag = FALSE;
+		//sendPtr->sendblkmsg = 0;
+		if(isempty(prptr->sendqueue)){
+			prptr->rcpblkflag = FALSE;
+			prptr->prhasmsg = FALSE;
+		}
+
+		/* make sender ready */
+		ready(senderPid);			
+
+
+	}
 	restore(mask);
 	return msg;
 }

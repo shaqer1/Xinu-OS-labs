@@ -53,6 +53,10 @@ pid32	create(
 	prptr->prparent = (pid32)getpid();
 	prptr->prhasmsg = FALSE;
 
+	/* Lab 4 fields init */
+	prptr->sendblkflag = FALSE;
+	prptr->rcpblkflag = FALSE;
+
 	/* Set up stdin, stdout, and stderr descriptors for the shell	*/
 	prptr->prdesc[0] = CONSOLE;
 	prptr->prdesc[1] = CONSOLE;

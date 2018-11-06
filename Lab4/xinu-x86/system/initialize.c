@@ -26,6 +26,8 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
 
+
+int32 sendWaitcount;
 /*------------------------------------------------------------------------
  * nulluser - initialize the system and become the null process
  *
@@ -131,10 +133,15 @@ static	void	sysinit()
 		prptr = &proctab[i];
 		prptr->prstate = PR_FREE;
 		prptr->prname[0] = NULLCH;
-		prptr->prstkbase = NULL;
 		prptr->prprio = 0;
-	}
+		prptr->prstkbase = NULL;
 
+		/* init new Lab 4 fields */
+		prptr->sendqueue = newqueue();
+
+	}
+	/* init send wait prio counter */
+	sendWaitcount = NPROC;
 	/* Initialize the Null process entry */	
 
 	prptr = &proctab[NULLPROC];
