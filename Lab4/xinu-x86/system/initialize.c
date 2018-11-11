@@ -15,6 +15,13 @@ extern	void xdone(void);	/* System "shutdown" procedure		*/
 static	void sysinit(); 	/* Internal system initialization	*/
 extern	void meminit(void);	/* Initializes the free memory list	*/
 
+/*
+	adding gdb lines of code
+*/
+/* 
+extern void set_debug_traps(); // Add these two function
+extern void breakpoint();      // prototypes */
+
 /* Declarations of major kernel variables */
 
 struct	procent	proctab[NPROC];	/* Process table			*/
@@ -134,10 +141,12 @@ static	void	sysinit()
 		prptr->prstate = PR_FREE;
 		prptr->prname[0] = NULLCH;
 		prptr->prprio = 0;
+
 		prptr->prstkbase = NULL;
 
 		/* init new Lab 4 fields */
 		prptr->sendqueue = newqueue();
+		prptr->prhascb = FALSE;
 
 	}
 	/* init send wait prio counter */
@@ -169,6 +178,11 @@ static	void	sysinit()
 	/* Create a ready list for processes */
 
 	readylist = newqueue();
+/* 
+	//added gdb files
+
+	set_debug_traps(); // Add these two
+    breakpoint();      // function calls here */
 
 	/* Initialize the real time clock */
 

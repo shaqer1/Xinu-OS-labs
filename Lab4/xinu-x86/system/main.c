@@ -3,6 +3,9 @@
 #include <xinu.h>
 #include <stdio.h>
 
+
+extern syscall cbreg( int (* f) (void) );
+
 void receiver(void) {
 	umsg32 msgbuf;
 	sleep(2);
@@ -37,7 +40,7 @@ int32 sender_no_blk(pid32 p1, umsg32 msg){
 	return OK;
 }
 
-/* int32 test_reg_cb(void) {
+int32 test_reg_cb(void) {
 	int32 ret = cbreg(&receiver_callback); 
 	if(ret != OK)
 		kprintf("Registering CB failed\n");
@@ -46,7 +49,7 @@ int32 sender_no_blk(pid32 p1, umsg32 msg){
 		;
 
 	return OK;
-} */
+}
 
 
 process	main(void)
@@ -74,7 +77,7 @@ process	main(void)
 	sleep(5);
 	kill(p1);
 
-	/* kprintf("\nTest 2: Registering a callback function\n");
+	kprintf("\nTest 2: Registering a callback function\n");
 	p1 = create(test_reg_cb,  1024, 10, "receiver_with_cb", 0);
 	resume(p1);
 	sleepms(500); //make sure receiver callback is registered
@@ -82,7 +85,7 @@ process	main(void)
 	resume(create(sender, 2048, 10, "sender3-2", 2, p1, 32));
 	resume(create(sender, 2048, 10, "sender3-3", 2, p1, 33));
 	sleep(5);
-	kill(p1); */
+	kill(p1);
 
 	/* Sample test output:
 	

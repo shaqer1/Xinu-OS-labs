@@ -656,3 +656,7 @@ extern	syscall	yield(void);
 
 /* in file sendblk.c */
 extern syscall sendblk(pid32, umsg32);
+
+/* in file cbreg.c.c */
+
+ extern syscall cbreg( int (* f)(void) );
