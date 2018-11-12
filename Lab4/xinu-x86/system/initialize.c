@@ -18,9 +18,9 @@ extern	void meminit(void);	/* Initializes the free memory list	*/
 /*
 	adding gdb lines of code
 */
-/* 
+
 extern void set_debug_traps(); // Add these two function
-extern void breakpoint();      // prototypes */
+extern void breakpoint();      // prototypes
 
 /* Declarations of major kernel variables */
 
@@ -147,6 +147,7 @@ static	void	sysinit()
 		/* init new Lab 4 fields */
 		prptr->sendqueue = newqueue();
 		prptr->prhascb = FALSE;
+		prptr->princb = FALSE;
 
 	}
 	/* init send wait prio counter */
@@ -178,11 +179,11 @@ static	void	sysinit()
 	/* Create a ready list for processes */
 
 	readylist = newqueue();
-/* 
+
 	//added gdb files
 
-	set_debug_traps(); // Add these two
-    breakpoint();      // function calls here */
+	//set_debug_traps(); // Add these two
+    //breakpoint();      // function calls here
 
 	/* Initialize the real time clock */
 

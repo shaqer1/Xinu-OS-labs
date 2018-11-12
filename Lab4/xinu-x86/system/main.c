@@ -16,6 +16,7 @@ void receiver(void) {
 }
 
 int32 receiver_callback(void) {
+	//kprintf("incallback\n");
 	umsg32 msgbuf;
 	msgbuf = receive();
 	kprintf("In callback of Process %d, Message: %d\n", currpid, msgbuf);

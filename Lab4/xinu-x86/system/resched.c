@@ -44,17 +44,30 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	ptnew->prstate = PR_CURR;
 	preempt = QUANTUM;		/* Reset time slice for process	*/
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
-	ptnew = &proctab[curr];
-	if(ptnew->prhascb && ptnew->prhasmsg){
-		kprintf("calling callback\n");
-		enable();
-		kprintf("urr pid in calling call back switching to %s\n", ptnew->prname);
+	ptnew = &proctab[currpid];
+	if(ptnew->prhascb && ptnew->rcpblkflag && !ptnew->princb){
+		//kprintf("calling callback\n");
+		//kprintf("urr pid in calling call back switching to %s\n", ptnew->prname);
 		ptnew->prhascb = FALSE;
+		ptnew->princb = TRUE;
+		enable();
 		ptnew->fptr();
-		ptnew->fptr = NULL;
+		ptnew->princb = FALSE;
+		while(ptnew->rcpblkflag && !ptnew->princb){
+			ptnew->princb = TRUE;
+			enable();
+			ptnew->fptr();
+			ptnew->princb = FALSE;
+		}
+		if(ptnew->rcpblkflag){
+			ptnew->fptr = NULL;
+		}
 		//ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
 
-	}
+	}/* else if(ptnew->princb && ptnew->rcpblkflag){
+		ptnew->prhascb = TRUE ;
+		ready(currpid);//really?sure!
+	} */
 
 	/* Old process returns here when resumed */
 

@@ -39,6 +39,8 @@ syscall	sendblk(
     curr->sendblkrcp = pid;
     /* Set receiver attr */
     prptr->rcpblkflag = TRUE;
+	/* kprintf("inserting %s to receiver %d queue with message: %d and counter:%d\n"
+		, curr->prname, pid, msg, sendWaitcount); */
     insert(currpid, prptr->sendqueue, sendWaitcount--);
 	//kprintf("this sender is waiting\n");
 	resched();		/* Block until recv ready	*/    

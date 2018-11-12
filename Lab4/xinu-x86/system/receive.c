@@ -28,12 +28,14 @@ umsg32	receive(void)
 		qid16 q = prptr->sendqueue;
 		if (isbadqid(q)) {
 			return SYSERR;
-		} else if (isempty(q)) {
+		} /* else if (isempty(q)) {
 			return EMPTY;
-		}
+		} */
 		sendWaitcount++;
 		pid32 senderPid = dequeue(q);
 		struct procent *sendPtr = &proctab[senderPid];
+		/* kprintf("popped %s from receiver %d queue with message: %d and counter:%d\n"
+		, &proctab[senderPid].prname, currpid, sendPtr->sendblkmsg, sendWaitcount); */
 		prptr->prmsg = sendPtr->sendblkmsg;		/* Deliver message		*/
 		prptr->prhasmsg = TRUE;		/* Indicate message is waiting	*/
 		msg = prptr->prmsg;

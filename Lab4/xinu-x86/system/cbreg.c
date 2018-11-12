@@ -11,8 +11,9 @@ syscall	cbreg( int (* fnp)(void) ){
 	struct	procent *prptr;		/* Ptr to process' table entry	*/
 
 	mask = disable();
+
     prptr = &proctab[currpid];
-	if (prptr->prstate == PR_FREE) {
+	if (prptr->prstate == PR_FREE || prptr->prhascb) {
 		restore(mask);
 		return SYSERR;
 	}

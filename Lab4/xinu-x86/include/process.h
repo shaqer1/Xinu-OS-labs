@@ -60,6 +60,7 @@ struct procent {		/* Entry in the process table		*/
    	qid16 sendqueue;             /* Index to FIFO queue of blocked senders */
 	bool8 prhascb;          /* Nonzero iff callback function has been registered */
    	int (* fptr) ();        /* Pointer to cb function if one has been registered */
+	bool8 princb;			/* nonZero iff recv in princb */
 
 };
 
