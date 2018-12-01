@@ -660,3 +660,6 @@ extern syscall sendblk(pid32, umsg32);
 /* in file cbreg.c.c */
 
  extern syscall cbreg( int (* f)(void) );
+
+ /* in file sendblk.c */
+extern syscall sendq(pid32, umsg32);

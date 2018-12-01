@@ -148,7 +148,8 @@ static	void	sysinit()
 		prptr->sendqueue = newqueue();
 		prptr->prhascb = FALSE;
 		prptr->princb = FALSE;
-
+		prptr->prqcount = 0;
+		prptr->prqtail = 0;
 	}
 	/* init send wait prio counter */
 	sendWaitcount = NPROC;

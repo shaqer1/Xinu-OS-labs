@@ -15,6 +15,15 @@ void receiver(void) {
 	}
 }
 
+void receiverq(void) {
+	umsg32 msgbuf;
+	sleep(2);
+	while (TRUE) {
+		msgbuf = receiveq();
+		kprintf("Receiverq Process %d, Message: %d\n", currpid, msgbuf);
+	}
+}
+
 int32 receiver_callback(void) {
 	//kprintf("incallback\n");
 	umsg32 msgbuf;
@@ -26,6 +35,15 @@ int32 receiver_callback(void) {
 int32 sender(pid32 p1, umsg32 msg){
 	kprintf("Sending \"%d\" to Process %d\n", msg, p1);
 	int32 ret = sendblk(p1, msg);
+	if(ret != OK)
+		kprintf("FAILED Sending %d\n", msg);
+	sleep(4);
+	return OK;
+}
+
+int32 senderq(pid32 p1, umsg32 msg){
+	kprintf("Sendingq \"%d\" to Process %d\n", msg, p1);
+	int32 ret = sendq(p1, msg);
 	if(ret != OK)
 		kprintf("FAILED Sending %d\n", msg);
 	sleep(4);
@@ -85,6 +103,17 @@ process	main(void)
 	resume(create(sender, 2048, 10, "sender3-1", 2, p1, 31));
 	resume(create(sender, 2048, 10, "sender3-2", 2, p1, 32));
 	resume(create(sender, 2048, 10, "sender3-3", 2, p1, 33));
+	sleep(5);
+	kill(p1);
+
+	kprintf("\nTest 3: Extra-Credit\n");
+	p1 = create(receiverq, 1024, 10, "receiverq", 0);
+	resume(create(senderq, 2048, 10, "sender3-1", 2, p1, 41)); 
+	resume(create(senderq, 2048, 10, "sender3-2", 2, p1, 42));
+	resume(create(senderq, 2048, 10, "sender3-3", 2, p1, 43));
+	resume(create(senderq, 2048, 10, "sender3-4", 2, p1, 44));
+	sleepms(500);
+	resume(p1);
 	sleep(5);
 	kill(p1);
 

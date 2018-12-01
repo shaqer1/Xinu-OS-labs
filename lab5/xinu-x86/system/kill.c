@@ -24,6 +24,13 @@ syscall	kill(
 	if (--prcount <= 1) {		/* Last user process completes	*/
 		xdone();
 	}
+	struct memblk *allocList = (&proctab[pid])->allocList;
+    struct memblk *next = allocList->mnext;
+
+    while(next != NULL){
+		freemem_r( (char *) next, (uint32) roundmb(next->mlength));
+        next = next->mnext;
+    }
 
 	send(prptr->prparent, pid);
 	for (i=0; i<3; i++) {

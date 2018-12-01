@@ -133,6 +133,11 @@ static	void	sysinit()
 		prptr->prname[0] = NULLCH;
 		prptr->prstkbase = NULL;
 		prptr->prprio = 0;
+
+		/* lab 5 */
+		struct memblk *memptr = prptr->allocList;
+		memptr->mnext = (struct memblk *)NULL;
+		memptr->mlength = 0;
 	}
 
 	/* Initialize the Null process entry */	

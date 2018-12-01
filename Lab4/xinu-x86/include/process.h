@@ -23,6 +23,9 @@
 #define	PNMLEN		16	/* Length of process "name"		*/
 #define	NULLPROC	0	/* ID of the null process		*/
 
+/* Lab 4 extra credit */
+#define MSGQ_SIZE 3
+
 /* Process initialization constants */
 
 #define	INITSTK		65536	/* Initial process stack size		*/
@@ -61,7 +64,9 @@ struct procent {		/* Entry in the process table		*/
 	bool8 prhascb;          /* Nonzero iff callback function has been registered */
    	int (* fptr) ();        /* Pointer to cb function if one has been registered */
 	bool8 princb;			/* nonZero iff recv in princb */
-
+	umsg32 prqmsgs[MSGQ_SIZE]; /* messages queue */
+	uint16 prqcount;
+	uint16 prqtail;
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

@@ -652,3 +652,15 @@ extern	syscall	yield(void);
 #define	ntohs(x)   ( ( 0xff & ((x)>>8) ) | ( (0xff & (x)) << 8 ) )
 #define	ntohl(x)   (  (((x)>>24) & 0x000000ff) | (((x)>> 8) & 0x0000ff00) | \
 		      (((x)<< 8) & 0x00ff0000) | (((x)<<24) & 0xff000000) )
+
+
+/* lab5 */
+
+/* in file freemem_r.c */
+extern	syscall	freemem_r(char *, uint32);
+
+/* in file getmem.c */
+extern	char	*getmem_r(uint32);
+
+/* in  r_mem_allocated.c*/
+extern syscall	r_mem_allocated(pid32 , uint32*);

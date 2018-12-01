@@ -7,7 +7,6 @@
 
 static uint32 memory_allocated = 0;
 
-
 bool8 initial_active[NPROC];
 
 /* ************************************
