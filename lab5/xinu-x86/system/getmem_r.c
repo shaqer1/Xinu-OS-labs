@@ -73,7 +73,7 @@ void addAlloc(struct memblk * curr, uint32 length){
 
     next = curr;
     curr->mlength = length;	
-	kprintf("in process %s memalloc: %x addr: %x prev: %x\n", prptr->prname, prptr->memAlloc, next, prev);
+	//kprintf("in process %s memalloc: %x addr: %x prev: %x\n", prptr->prname, prptr->memAlloc, next, prev);
 	//kprintf("curr size: %d\n", curr->mlength);
     prev->mnext = next;
 

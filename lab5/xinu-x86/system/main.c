@@ -28,30 +28,30 @@ void test0() {
 			 (memory_allocated == 0)));
 
 	buffer = getmem_r(blk_size);
-	kprintf("buff: %x\n", buffer);
+	//kprintf("buff: %x\n", buffer);
 	ASSERT_TRUE("test1",
 			((buffer > 0 && buffer != (char*)SYSERR) &&
 			 (r_mem_allocated(getpid(), &memory_allocated) == OK) &&
 			 (memory_allocated == blk_size)));
 
-	buffer = getmem_r(blk_size);
-	kprintf("buff: %x\n", buffer);
+	buffer = getmem_r(blk_size+5);
+	//kprintf("buff: %x\n", buffer);
 	ASSERT_TRUE("test1",
 			((buffer > 0 && buffer != (char*)SYSERR) &&
 			 (r_mem_allocated(getpid(), &memory_allocated) == OK) &&
-			 (memory_allocated == 2*blk_size)));
+			 (memory_allocated == (2*blk_size+5))));
 
 	buffer = getmem_r(blk_size);
-	kprintf("buff: %x\n", buffer);
+	//kprintf("buff: %x\n", buffer);
 	ASSERT_TRUE("test1",
 			((buffer > 0 && buffer != (char*)SYSERR) &&
 			 (r_mem_allocated(getpid(), &memory_allocated) == OK) &&
-			 (memory_allocated == 3*blk_size)));
+			 (memory_allocated == (3*blk_size+5))));
 
 	ASSERT_TRUE("test2",
 			((freemem_r(buffer, blk_size) == OK) &&
 			 (r_mem_allocated(getpid(), &memory_allocated) == OK) &&
-			 (memory_allocated == 2*blk_size)));
+			 (memory_allocated == (2*blk_size+5))));
 }
 
 /* ********************************************************************************
