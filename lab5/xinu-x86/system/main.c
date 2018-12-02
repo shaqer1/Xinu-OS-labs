@@ -28,15 +28,30 @@ void test0() {
 			 (memory_allocated == 0)));
 
 	buffer = getmem_r(blk_size);
+	kprintf("buff: %x\n", buffer);
 	ASSERT_TRUE("test1",
 			((buffer > 0 && buffer != (char*)SYSERR) &&
 			 (r_mem_allocated(getpid(), &memory_allocated) == OK) &&
 			 (memory_allocated == blk_size)));
 
+	buffer = getmem_r(blk_size);
+	kprintf("buff: %x\n", buffer);
+	ASSERT_TRUE("test1",
+			((buffer > 0 && buffer != (char*)SYSERR) &&
+			 (r_mem_allocated(getpid(), &memory_allocated) == OK) &&
+			 (memory_allocated == 2*blk_size)));
+
+	buffer = getmem_r(blk_size);
+	kprintf("buff: %x\n", buffer);
+	ASSERT_TRUE("test1",
+			((buffer > 0 && buffer != (char*)SYSERR) &&
+			 (r_mem_allocated(getpid(), &memory_allocated) == OK) &&
+			 (memory_allocated == 3*blk_size)));
+
 	ASSERT_TRUE("test2",
 			((freemem_r(buffer, blk_size) == OK) &&
 			 (r_mem_allocated(getpid(), &memory_allocated) == OK) &&
-			 (memory_allocated == 0)));
+			 (memory_allocated == 2*blk_size)));
 }
 
 /* ********************************************************************************
@@ -88,7 +103,7 @@ process	main(void)
 	restore(mask);
 
 	kprintf("################## Testing Start ###################\n");
-	resume(create(run_test, 2048, 30, "test0", 3, "test0", test0, 5));
+	resume(create(run_test, 2048, 30, "run_test0", 3, "test0", test0, 5));
 	receive();recvclr(); 
 	kprintf("################ Testing Complete ##################\n");
 	return OK;

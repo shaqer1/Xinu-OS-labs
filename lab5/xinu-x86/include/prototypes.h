@@ -664,3 +664,5 @@ extern	char	*getmem_r(uint32);
 
 /* in  r_mem_allocated.c*/
 extern syscall	r_mem_allocated(pid32 , uint32*);
+
+extern syscall freemem_rPid(char *, uint32, pid32);

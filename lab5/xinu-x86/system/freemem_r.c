@@ -7,23 +7,40 @@
  *------------------------------------------------------------------------
  */
 
-void removeAlloc(struct memblk *);
-
+void removeAlloc(struct memblk *, pid32);
+syscall freemem_rPid(char *, uint32, pid32);
 
 syscall	freemem_r(
 	  char		*blkaddr,	/* Pointer to memory block	*/
 	  uint32	nbytes		/* Size of block in bytes	*/
 	)
 {
+	return freemem_rPid(blkaddr, nbytes, currpid);
+}
+
+syscall	freemem_rPid(
+	  char		*blkaddr,	/* Pointer to memory block	*/
+	  uint32	nbytes,		/* Size of block in bytes	*/
+	  pid32 pid				/* pid of  free mem */
+	)
+{
 	intmask	mask;			/* Saved interrupt mask		*/
 	struct	memblk	*next, *prev, *block;
 	uint32	top;
+
+
 
 	mask = disable();
 	if ((nbytes == 0) || ((uint32) blkaddr < (uint32) minheap)
 			  || ((uint32) blkaddr > (uint32) maxheap)) {
 		restore(mask);
 		return SYSERR;
+	}
+	struct procent *prptr = &proctab[pid];
+
+	//kprintf("here: %s, %x, freeing %d\n",prptr->prname, prptr->memAlloc, nbytes);
+	if(prptr->memAlloc >= 0){
+		prptr->memAlloc -= nbytes;
 	}
 
 	nbytes = (uint32) roundmb(nbytes);	/* Use memblk multiples	*/
@@ -52,9 +69,10 @@ syscall	freemem_r(
 		return SYSERR; 
 	}
 
-	removeAlloc(block);
+	removeAlloc(block, pid);
 
 	memlist.mlength += nbytes;
+	//kprintf("freeing addr: %x with next %x prev: %x   ", block, prev, next);
 
 	/* Either coalesce with previous block or add to free list */
 
@@ -73,13 +91,14 @@ syscall	freemem_r(
 		block->mlength += next->mlength;
 		block->mnext = next->mnext;
 	}
+	//kprintf("    exiting free: %s, %x, freed %x\n",prptr->prname, prptr->memAlloc, nbytes);
 	restore(mask);
 	return OK;
 }
 
 
-void removeAlloc(struct memblk * rem){
-	struct memblk *allocList = (&proctab[currpid])->allocList;
+void removeAlloc(struct memblk * rem, pid32 pid){
+	struct memblk *allocList = (&proctab[pid])->allocList;
     struct memblk *next = allocList->mnext, *prev = allocList;
 
     while(next != NULL && next != rem){
@@ -88,6 +107,7 @@ void removeAlloc(struct memblk * rem){
     }
 	
 	if(next == rem){
+		//kprintf("removed node %x from list and prev:%x new next %x \n",next, prev, next->mnext);
 		prev->mnext = next->mnext;
 	}
 }

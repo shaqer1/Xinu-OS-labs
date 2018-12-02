@@ -26,11 +26,17 @@ syscall	kill(
 	}
 	struct memblk *allocList = (&proctab[pid])->allocList;
     struct memblk *next = allocList->mnext;
+	struct memblk *nextptr = next;
 
     while(next != NULL){
-		freemem_r( (char *) next, (uint32) roundmb(next->mlength));
-        next = next->mnext;
+		//kprintf("In while %s memAlloc memalloc %x mem:%x\n", prptr->prname, prptr->memAlloc, next);
+		nextptr = next->mnext;
+		freemem_rPid( (char *) next, (uint32) next->mlength, pid);
+		//kprintf("\n\nGoig to node %x\n",nextptr->mnext);
+        next = nextptr;
     }
+
+	kprintf("Process %s memAlloc after kill %x\n", prptr->prname, prptr->memAlloc);
 
 	send(prptr->prparent, pid);
 	for (i=0; i<3; i++) {

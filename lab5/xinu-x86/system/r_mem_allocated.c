@@ -22,15 +22,15 @@ syscall	r_mem_allocated(
 	}
 
 
-	struct memblk *allocList = (&proctab[pid])->allocList;
+	/* struct memblk *allocList = (&proctab[pid])->allocList;
     struct memblk *next = allocList->mnext, *prev = allocList;
 
     while(next != NULL){
         prev = next;
         next = next->mnext;
-    }
-
-    *buf = prev->mlength;
+    } */
+    
+    *buf = prptr->memAlloc;
 	//kprintf("buf: %d\n", *buf);
     restore(mask);
     return OK;

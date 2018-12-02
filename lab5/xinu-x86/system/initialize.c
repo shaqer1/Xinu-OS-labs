@@ -138,6 +138,7 @@ static	void	sysinit()
 		struct memblk *memptr = prptr->allocList;
 		memptr->mnext = (struct memblk *)NULL;
 		memptr->mlength = 0;
+		prptr->memAlloc = 0;
 	}
 
 	/* Initialize the Null process entry */	

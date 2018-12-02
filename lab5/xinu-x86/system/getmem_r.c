@@ -61,7 +61,9 @@ char  	*getmem_r(
 }
 
 void addAlloc(struct memblk * curr, uint32 length){
-    struct memblk *allocList = (&proctab[currpid])->allocList;
+	struct procent * prptr = &proctab[currpid];
+	prptr->memAlloc += length;
+    struct memblk *allocList = prptr->allocList;
     struct memblk *next = allocList->mnext, *prev = allocList;
 
     while(next != NULL){
@@ -70,7 +72,8 @@ void addAlloc(struct memblk * curr, uint32 length){
     }
 
     next = curr;
-    curr->mlength = length;
+    curr->mlength = length;	
+	kprintf("in process %s memalloc: %x addr: %x prev: %x\n", prptr->prname, prptr->memAlloc, next, prev);
 	//kprintf("curr size: %d\n", curr->mlength);
     prev->mnext = next;
 
